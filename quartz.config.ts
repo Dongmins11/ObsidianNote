@@ -14,7 +14,7 @@ const config: QuartzConfig = {
     enablePopovers: true,
     analytics: {
       provider: "google",
-      tagID : "G-96T6EC24P2",
+      tagId : "G-96T6EC24P2",
     },
     locale: "ko-KR",
     baseUrl: "https://rungminth.com",

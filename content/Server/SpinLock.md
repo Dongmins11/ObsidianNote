@@ -18,7 +18,7 @@ Lock 구현에는 여러 메타가있습니다
 
 [!NOTE]- 전체코드
 
-```
+```csharp
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -128,7 +128,7 @@ namespace ServerCore
     
 - 기존 값을 반환하기 때문에, 반환값이 0이면 락이 비어있는 상태.
     
-```
+```csharp
 int original = Interlocked.Exchange(ref isLocked, 1);
 if (original == 0)
 {
@@ -148,7 +148,7 @@ if (original == 0)
 - 기대한 값과 일치하면 성공, 아니면 실패.
     
 
-```
+```csharp
 int expected = 0;
 int desired = 1;
 
@@ -164,7 +164,7 @@ if (expected == Interlocked.CompareExchange(ref isLocked, desired, expected))
 
 ## 4. 사용 예시
 
-```
+```csharp
 class Program
 {
     static int num = 0;

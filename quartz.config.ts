@@ -17,7 +17,7 @@ const config: QuartzConfig = {
       tagID : "G-96T6EC24P2",
     },
     locale: "ko-KR",
-    baseUrl: "rungminth.com",
+    baseUrl: "https://rungminth.com",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "modified",
     theme: {

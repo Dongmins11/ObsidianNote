@@ -2,7 +2,7 @@
 title: Rungminth의 개발 블로그에 오신 것을 환영합니다!
 description: 개발/공부 기록
 tags:
-  - component
+  - feature
 ---
 
 hello

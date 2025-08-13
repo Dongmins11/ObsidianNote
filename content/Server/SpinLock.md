@@ -16,9 +16,13 @@ Lock 구현에는 여러 메타가있습니다
 
 ## 2. 코드 구현 (주석 포함)
 
+[!NOTE]- 전체코드
+
+```
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+
 
 namespace ServerCore
 {
@@ -111,6 +115,7 @@ namespace ServerCore
         }
     }
 }
+```
 
 ---
 
@@ -123,12 +128,14 @@ namespace ServerCore
     
 - 기존 값을 반환하기 때문에, 반환값이 0이면 락이 비어있는 상태.
     
-
+```
 int original = Interlocked.Exchange(ref isLocked, 1);
 if (original == 0)
 {
     // 락을 획득함
 }
+```
+
 
 ---
 
@@ -141,6 +148,7 @@ if (original == 0)
 - 기대한 값과 일치하면 성공, 아니면 실패.
     
 
+```
 int expected = 0;
 int desired = 1;
 
@@ -148,12 +156,15 @@ if (expected == Interlocked.CompareExchange(ref isLocked, desired, expected))
 {
     // 락 획득 성공
 }
+```
+
+
 
 ---
 
 ## 4. 사용 예시
 
-
+```
 class Program
 {
     static int num = 0;
@@ -192,6 +203,7 @@ class Program
         Console.WriteLine(num); // 항상 0 출력
     }
 }`
+```
 
 ---
 

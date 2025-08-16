@@ -139,4 +139,4 @@ namespace ServerCore
     
 - Auto/ManualResetEvent → 커널에서 대기, CPU 점유율 낮음, 상대적으로 느림
     
-- 상황에 맞게 선택하는 것이 중요
+- 상황에 맞게 선택하는 것이 중요!

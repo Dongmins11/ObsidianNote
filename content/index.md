@@ -9,4 +9,8 @@ tags:
 ---
 ### 안녕하세요 공부한 내용이나 메모하고싶은 내용을 게시합니다.
 
-
+```dataview
+LIST
+FROM "content/RookissServerStudy/RookissServerStudy.md"
+SORT file.name ASC
+```

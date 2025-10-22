@@ -9,4 +9,5 @@ tags:
 ---
 ### 안녕하세요 공부한 내용이나 메모하고싶은 내용을 게시합니다.
 
-- [RookissServerStudy](app://obsidian.md/content/RookissServerStudy/RookissServerStudy.md)
+
+[[RookissServerStudy|🎮 서버인강 정리]]

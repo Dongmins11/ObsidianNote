@@ -14,7 +14,7 @@ Receive Send Connect DisConnect 기능을 모듈형으로 만들어놓은 클래
 
 ---
   
-# 미리 흝어보면 좋은 클래스 및 구조체
+# ✨미리 흝어보면 좋은 클래스 및 구조체
 
 ```csharp
 1. EndPoint
@@ -158,10 +158,57 @@ _sendArgs.SetBuffer(sendBuff, 0, sendBuff.Length);
 
 ## Receive
 
-말 그대로 데이터를 받는 기능이다
+### Receive를 호출하기 전 이벤트 설정
+- Async계열을 사용할 거 이기에 콜백이 필요함
+```csharp
+_recvArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnRecvCompleted);
 
-예시 : 어떤 유저가 내가 움직였다! 데이터 전송! 서버는 그걸 받아서 다른 유저들에게 뿌린다 물론 핵 감지나 가공처리할지말지는 서버에게 달려있음
+//버퍼 셋팅
+_recvArgs.SetBuffer(new byte[1024], 0, 1024);
+```
+
+### Receive등록 시켜놓는 함수
+- 처음 Start나 Init부분에 한번만 호출해서 한개의 루프만 돌리게끔 처리 해야함
+```csharp
+private void RegisterRecv()
+{
+    bool pending = _socket.ReceiveAsync(_recvArgs);
+    if (!pending)
+        OnRecvCompleted(null, _recvArgs);
+}
+```
 
 
+### Receive 데이터가 왔을 때 호출되는 함수
+- 받는 데이터가 있고 해당 데이터를 문제없이 받았으면  
+  다시 RegisterRecv를 돌려서 루프를 만들어줌  
+```csharp
+ private void OnRecvCompleted(object sender, SocketAsyncEventArgs args)
+ {
+     //BytesTransferred 내가 데이터를 얼마나 받앗는지
+     //0이 오는경우도있다
 
+     if (args.BytesTransferred > 0 && args.SocketError == SocketError.Success)
+     {
+         //Offset 어디서부터 시작하는지
+         //BytesTransferred 몇 바이트를 받았는지
+         try
+         {
+             OnReceive(new ArraySegment<byte>(args.Buffer, args.Offset, args.BytesTransferred));
 
+             //string recvData = Encoding.UTF8.GetString(args.Buffer, args.Offset, args.BytesTransferred);
+             //Console.WriteLine($"[From Client] {recvData}");
+
+             RegisterRecv();
+         }
+         catch (Exception ex)
+         {
+             Console.WriteLine($"OnRecvCompleted Failed {ex.Message}");
+         }
+     }
+     else
+     {
+         Disconnect();
+     }
+ }
+```

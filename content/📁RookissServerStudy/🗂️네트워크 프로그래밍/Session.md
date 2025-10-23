@@ -4,13 +4,15 @@
 비유 : 휴대폰을 래핑해서 간단하게 사용할 수 있게만든 클래스
 
 Session에는  
-Receive Send Connect DisConnect 기능을 모듈형으로 만들어놓은 클래스다  
+Receive Send DisConnect 기능을 모듈형으로 만들어놓은 클래스다  
 연결, 연결해제 및 데이터를 주고 받고 해주는 클래스를 만들것이다  
   
-먼저 Receive -> Send -> Connect -> DisConnect순으로 설명하겠다  
+먼저 Receive -> Send -> DisConnect순으로 설명하겠다  
   
 우리는 이전시간에 Async계열로 Listener를 만들었다  
 이번에 Session도 Async계열로 만들것.  
+
+Connect는 따로 만듬  
 
 ---
   
@@ -303,11 +305,6 @@ private void RegisterSend()
 ```
 
 ---
-## Connected
-
-
----
-
 ## DisConnected
 
 작업을 종료 할때 호출함

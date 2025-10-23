@@ -212,3 +212,124 @@ private void RegisterRecv()
      }
  }
 ```
+
+---
+
+## Send
+
+Send는 Receive랑 비슷하지만 다르게 짜야한다  
+왜냐? Receive는 커널에서 호출해주는 이벤트에 반응하는  
+이벤트 성이라 한개의 루프만 돌리면되지만  
+
+Send는 내가 직접 원하는 시점에 호출해야한다
+즉, 여러 번 Async가 호출될 수 도 있는데 성능에 문제가 생길 수 있으므로
+Queue나 ArraySagment를 사용해서 한번에 모아서 처리해주는 방식으로
+해주면 일단은! 최적화에 도움이 된다
+
+또한 데이터가 바뀔수 있는 RaceCondition상황이 있기에
+Lock을 사용해서 처리해준다
+
+###  Send를 호출하기 전 이벤트 설정
+- Async계열을 사용할 거 이기에 콜백이 필요함
+```csharp
+_sendArgs.Completed += new EventHandler<SocketAsyncEventArgs>(OnSendCompleted);
+```
+
+### Send함수 (Lock 처리)
+```csharp
+ public void Send(byte[] sendBuff)
+ {
+     lock (_lock)
+     {
+         _sendQueue.Enqueue(sendBuff);
+
+         //1) _pendingList 대기중인 데이터가 없다고 판별하니 RegisterSend
+         //2) 만약 예약중인 데이터가 있으면_sendQueue만 넣고 나옴
+         if (_pendingList.Count == 0)
+             RegisterSend();
+     }
+ }
+```
+
+### Send등록 시켜놓는 함수
+- Queue와 ArraySegment를 사용해서 한번에 데이터를 모아서 보내는 방식으로 처리  
+```csharp
+private void RegisterSend()
+{
+    while (_sendQueue.Count > 0)
+    {
+        byte[] sendBuff = _sendQueue.Dequeue();
+        _pendingList.Add(new ArraySegment<byte>(sendBuff, 0, sendBuff.Length));
+    }
+
+    _sendArgs.BufferList = _pendingList;
+
+    bool pending = _socket.SendAsync(_sendArgs);
+    if (pending == false)
+        OnSendCompleted(null, _sendArgs);
+}
+```
+
+
+### Send 데이터가 왔을 때 호출되는 함수
+```csharp
+ private void OnSendCompleted(object sender, SocketAsyncEventArgs args)
+ {
+     lock (_lock)
+     {
+         if (args.BytesTransferred > 0 && args.SocketError == SocketError.Success)
+         {
+             try
+             {
+                 _sendArgs.BufferList = null;
+                 _pendingList.Clear();
+                 
+                 OnSend(_sendArgs.BytesTransferred);
+                 
+                 if (_sendQueue.Count > 0)
+                     RegisterSend();
+             }
+             catch (Exception ex)
+             {
+                 Console.WriteLine($"OnSendCompleted Failed {ex.Message}");
+             }
+         }
+         else
+         {
+             Disconnect();
+         }
+     }
+ }
+```
+
+---
+## Connected
+
+
+---
+
+## DisConnected
+
+작업을 종료 할때 호출함
+연속으로 호출되면 문제가 발생하기에
+Interlocked계열을 사용해서
+내가 만든 변수가 변경이 되었다면 DisConnected가 된거이기에
+연속으로 호출을 막아줌
+
+```csharp
+public void Disconnect()
+{
+    int desired = 1;
+    if (desired == Interlocked.Exchange(ref _disconnected, desired))
+        return;
+
+    OnDisConnected(_socket.RemoteEndPoint);
+    _socket.Shutdown(SocketShutdown.Both);
+    _socket.Close();
+}
+
+```
+
+
+---
+

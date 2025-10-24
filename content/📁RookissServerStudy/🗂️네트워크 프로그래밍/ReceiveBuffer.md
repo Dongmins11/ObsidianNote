@@ -1,46 +1,4 @@
 
-오늘 우리는 ReceiveBuffer를 처리해줄 것
-
-이전까지는 Receive에 SetBuffer를 할 때byte[1024]를 대충 감잡아서 때려넣어놨는데
-```csharp
-_recvArgs.SetBuffer(new byte[1024], 0, 1024);
-```
-
-지난시간에 TCP개론 시간에 잠깐 얘기해봤지만  
-클라에서 100Byte를 보냇다고해서 무조껀 100Byte전부 넘어오는게 아니다  
-TCP는 버퍼의 상황을 봐서 분할해서 보낼 수도 있다  
-  
-즉 이전 시간에  Register -> CallBack -> Completed가 됐는데  
-Completed 단계에서 넘어온 값을 한번에 처리 해주고 있엇는데  
-이제 TCP의 특성으로 인해서 데이터가 전부 왔는지 확인해서   
-데이터를 처리해주는 식으로 변경해야한다  
-  
-## 변경전
-```csharp
-private void OnRecvCompleted(object sender, SocketAsyncEventArgs args)
-{
-    if (args.BytesTransferred > 0 && args.SocketError == SocketError.Success)
-    {
-        try
-        {
-            OnReceive(new ArraySegment<byte>(args.Buffer, args.Offset, args.BytesTransferred));
-            
-            RegisterRecv();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"OnRecvCompleted Failed {ex.Message}");
-        }
-    }
-    else
-    {
-        Disconnect();
-    }
-}
-```
-
----
-
 ## RecvBuffer 역할
   
 네트워크 프로그래밍에서 소켓으로부터 받은 데이터를 임시로 저장하고 관리하는 버퍼  가 필요함 우리는 이전에 임시로 해둔거임  

@@ -211,9 +211,6 @@ public void Clean()
 5. 컨텐츠 단에서 처리한 데이터 만큼 Read커서이동
 
 
-
-1 
-
 ```csharp
 1. Seesion에 recvBuff생성 
 RecvBuffer _recvBuffer = new RecvBuffer(1024);

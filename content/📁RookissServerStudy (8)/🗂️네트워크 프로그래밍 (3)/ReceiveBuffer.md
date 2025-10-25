@@ -93,7 +93,7 @@ public void Clean()
 
 ---
 
-## 데이터를 읽고 쓸때 포인터를 이동하는데 그거에 대한 기능 모음
+## 데이터를 읽고 쓸 때 사용하는 기능 모음
 
 | 함수             | 역할                   |
 | -------------- | -------------------- |
@@ -103,6 +103,9 @@ public void Clean()
 | `OnWrite()`    | 수신 완료 후 write 포인터 이동 |
 | `ReadSegment`  | 콘텐츠단에서 읽을 구간         |
 | `WriteSegment` | 다음 recv에서 쓸 구간       |
+
+---
+## 로직
 
 ```csharp
 
@@ -159,8 +162,7 @@ public void Clean()
 
 ---
 
-## 사용 흐름 
-
+## Session의 사용 흐름 
 
 1. Seesion에 recvBuff생성 
 2. RigesterRecv 부분에서 Clean처리 후 OS에서 Recv데이터를 쌓아줄 버퍼를 셋 (Write버퍼)

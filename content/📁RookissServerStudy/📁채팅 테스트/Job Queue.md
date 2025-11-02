@@ -36,7 +36,7 @@ c#의 람다식을 사용해서 간편하게 만드는 방법
 
 ---
 
-## JobQueue 클래스 소개
+## JobQueue 클래스 소개 (Action Delegate활용)
 
 ### 인터페이스 
 - Push() => 각 스레드가 수행해야 할 작업을 Enqueue를 하게끔 유도
@@ -86,7 +86,7 @@ private void Flush()
 ```
 - Pop
 	- 먼저 온 순서대로 저장되어있는 일감을 빼내는 용도
-	```csharp
+```csharp
 private Action Pop()
 {
 	lock (_lock)

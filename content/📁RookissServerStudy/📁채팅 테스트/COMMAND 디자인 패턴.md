@@ -59,7 +59,7 @@
 
 ---
 ### 구조 (위키 백과 참고) 
-![[Pasted image 20251101211956.png]]
+![](content/images/hello.png)
 
 참고 링크 : https://ko.wikipedia.org/wiki/%EC%BB%A4%EB%A7%A8%EB%93%9C_%ED%8C%A8%ED%84%B4
 
